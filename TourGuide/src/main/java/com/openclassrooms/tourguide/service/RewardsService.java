@@ -3,7 +3,11 @@ package com.openclassrooms.tourguide.service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
+import jakarta.annotation.PreDestroy;
 import org.springframework.stereotype.Service;
 
 import gpsUtil.GpsUtil;
@@ -17,6 +21,7 @@ import com.openclassrooms.tourguide.user.UserReward;
 @Service
 public class RewardsService {
     private static final double STATUTE_MILES_PER_NAUTICAL_MILE = 1.15077945;
+	private static final int REWARDS_THREAD_POOL_SIZE = 500;
 
 	// proximity in miles
     private int defaultProximityBuffer = 10;
@@ -24,6 +29,7 @@ public class RewardsService {
 	private int attractionProximityRange = 200;
 	private final GpsUtil gpsUtil;
 	private final RewardCentral rewardsCentral;
+	private final ExecutorService executorService = Executors.newFixedThreadPool(REWARDS_THREAD_POOL_SIZE);
 	
 	public RewardsService(GpsUtil gpsUtil, RewardCentral rewardCentral) {
 		this.gpsUtil = gpsUtil;
@@ -53,6 +59,17 @@ public class RewardsService {
 				}
 			}
 		}
+	}
+	public CompletableFuture<Void> calculateRewardsAsync(User user) {
+		return CompletableFuture.runAsync(() -> calculateRewards(user), executorService);
+	}
+
+	/**
+	 * Ferme proprement le pool de threads. À appeler en fin de tests.
+	 */
+	@PreDestroy
+	public void shutdownExecutor() {
+		executorService.shutdown();
 	}
 	
 	public boolean isWithinAttractionProximity(Attraction attraction, Location location) {

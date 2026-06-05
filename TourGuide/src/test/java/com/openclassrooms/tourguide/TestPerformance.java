@@ -55,6 +55,9 @@ public class TestPerformance {
 		// minutes
 		InternalTestHelper.setInternalUserNumber(100000);
 		TourGuideService tourGuideService = new TourGuideService(gpsUtil, rewardsService);
+		// Isolate the perf measurement from the background Tracker, which would
+		// otherwise consume the same TourGuideService pool concurrently.
+		tourGuideService.tracker.stopTracking();
 
 		List<User> allUsers = new ArrayList<>();
 		allUsers = tourGuideService.getAllUsers();
@@ -86,6 +89,9 @@ public class TestPerformance {
 		StopWatch stopWatch = new StopWatch();
 		stopWatch.start();
 		TourGuideService tourGuideService = new TourGuideService(gpsUtil, rewardsService);
+		// Isolate the perf measurement from the background Tracker, which would
+		// otherwise consume the TourGuideService pool concurrently.
+		tourGuideService.tracker.stopTracking();
 
 		Attraction attraction = gpsUtil.getAttractions().get(0);
 		List<User> allUsers = new ArrayList<>();

@@ -1,0 +1,43 @@
+# =====================================================
+# .gitignore — TourGuide (OpenClassrooms Java Projet 8)
+# =====================================================
+
+# --- Fichiers locaux non versionnés ---
+docs/
+
+# --- Artefacts de build Maven ---
+target/
+build/
+*.class
+
+# --- IDE : IntelliJ IDEA ---
+.idea/
+*.iml
+*.iws
+*.ipr
+out/
+
+# --- IDE : VS Code ---
+.vscode/
+
+# --- IDE : Eclipse ---
+.classpath
+.project
+.settings/
+bin/
+
+# --- OS : Windows / macOS / Linux ---
+Thumbs.db
+Desktop.ini
+.DS_Store
+*.swp
+*.swo
+
+# --- Logs ---
+*.log
+logs/
+
+# --- Dépendances locales : NE PAS IGNORER ---
+# Les JARs dans TourGuide/libs/ doivent être commités
+# (gpsUtil, RewardCentral, TripPricer)
+# Donc on N'AJOUTE PAS *.jar à ce gitignore.
